@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ecommerce-data-platform"
+version = "0.1.0"
+description = "End-to-end e-commerce data engineering platform"
+requires-python = ">=3.12"
+dependencies = [
+    "email-validator>=2.2,<3",
+    "httpx>=0.28,<1",
+    "pydantic>=2.11,<3",
+    "pydantic-settings>=2.10,<3",
+    "tenacity>=9.1,<10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4,<9",
+    "pytest-cov>=6,<8",
+    "ruff>=0.12,<1",
+]
+
+[project.scripts]
+check-platzi-api = "ecommerce_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
