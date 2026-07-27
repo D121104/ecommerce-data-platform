@@ -1,0 +1,45 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Testing and linting
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Airflow runtime
+airflow/logs/
+airflow/plugins/__pycache__/
+airflow/airflow.cfg
+airflow/airflow.db
+
+# dbt generated files
+dbt/ecommerce_dw/target/
+dbt/ecommerce_dw/logs/
+dbt/ecommerce_dw/dbt_packages/
+
+# Local data
+data/
+*.csv
+*.parquet
+
+# Docker and database data
+postgres_data/
+metabase_data/
+
+# IDE and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
