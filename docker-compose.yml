@@ -1,0 +1,52 @@
+name: ecommerce-data-platform
+
+services:
+  postgres:
+    image: postgres:17-bookworm
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD}
+
+      INGESTION_DB_USER: ${INGESTION_DB_USER}
+      INGESTION_DB_PASSWORD: ${INGESTION_DB_PASSWORD}
+
+      DBT_DB_USER: ${DBT_DB_USER}
+      DBT_DB_PASSWORD: ${DBT_DB_PASSWORD}
+
+      BI_DB_USER: ${BI_DB_USER}
+      BI_DB_PASSWORD: ${BI_DB_PASSWORD}
+
+      TZ: UTC
+      PGTZ: UTC
+
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_ADMIN_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+    shm_size: 128mb
+
+    networks:
+      - data_network
+
+volumes:
+  postgres_data:
+
+networks:
+  data_network:
+    driver: bridge
