@@ -1,0 +1,101 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: >
+      Current-state customer dimension.
+      Grain: one row per customer_id.
+
+    columns:
+      - name: customer_key
+        description: Stable warehouse surrogate key for a customer.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: Natural customer identifier from the source.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: email
+        description: >
+          Normalized customer email. Email is not assumed to be unique
+          because different source users may share the same email.
+        data_tests:
+          - not_null
+
+      - name: customer_name
+        data_tests:
+          - not_null
+
+      - name: is_active
+        data_tests:
+          - not_null
+
+
+  - name: dim_categories
+    description: >
+      Current-state product category dimension.
+      Grain: one row per category_id.
+
+    columns:
+      - name: category_key
+        description: Stable warehouse surrogate key for a category.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: category_id
+        description: Natural category identifier from the source.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: category_name
+        data_tests:
+          - not_null
+
+      - name: is_active
+        data_tests:
+          - not_null
+
+
+  - name: dim_products
+    description: >
+      Current-state product dimension.
+      Grain: one row per product_id.
+
+    columns:
+      - name: product_key
+        description: Stable warehouse surrogate key for a product.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_id
+        description: Natural product identifier from the source.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_name
+        data_tests:
+          - not_null
+
+      - name: product_price
+        data_tests:
+          - not_null
+
+      - name: category_key
+        description: Category warehouse key. Nullable for uncategorized products.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_categories')
+                field: category_key
+
+      - name: is_active
+        data_tests:
+          - not_null

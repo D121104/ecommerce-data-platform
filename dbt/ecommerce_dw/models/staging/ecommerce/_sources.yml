@@ -1,0 +1,314 @@
+version: 2
+
+sources:
+  - name: ecommerce_raw
+    description: >
+      Raw ecommerce data loaded by the Python ingestion pipeline
+      and synthetic order generator.
+
+    schema: raw
+
+    tables:
+      - name: categories
+        description: >
+          Current-state product categories ingested from the
+          Platzi Fake Store API.
+
+        columns:
+          - name: category_id
+            description: Source category identifier.
+            data_tests:
+              - not_null
+              - unique
+
+          - name: name
+            description: Category name.
+            data_tests:
+              - not_null
+
+          - name: slug
+            description: URL-friendly category name.
+
+          - name: image_url
+            description: Category image URL from the source API.
+
+          - name: source_created_at
+            description: Timestamp when the record was created in the source.
+
+          - name: source_updated_at
+            description: Timestamp when the record was last updated in the source.
+
+          - name: payload
+            description: Original source record stored as JSON.
+            data_tests:
+              - not_null
+
+          - name: record_hash
+            description: Hash used to detect changes in the source record.
+            data_tests:
+              - not_null
+
+          - name: batch_id
+            description: Ingestion batch that last processed the record.
+            data_tests:
+              - not_null
+
+          - name: is_active
+            description: Whether the source record is still active.
+            data_tests:
+              - not_null
+
+          - name: first_seen_at
+            description: First time the record was observed.
+            data_tests:
+              - not_null
+
+          - name: last_seen_at
+            description: Most recent time the record was observed.
+            data_tests:
+              - not_null
+
+      - name: products
+        description: >
+          Current-state products ingested from the
+          Platzi Fake Store API.
+
+        columns:
+          - name: product_id
+            description: Source product identifier.
+            data_tests:
+              - not_null
+              - unique
+
+          - name: title
+            description: Product title.
+            data_tests:
+              - not_null
+
+          - name: slug
+            description: URL-friendly product title.
+
+          - name: price
+            description: Current product price.
+            data_tests:
+              - not_null
+
+          - name: description
+            description: Product description.
+
+          - name: category_id
+            description: Category assigned to the product.
+            data_tests:
+              - relationships:
+                  arguments:
+                    to: source('ecommerce_raw', 'categories')
+                    field: category_id
+
+          - name: images
+            description: Array of product image URLs.
+            data_tests:
+              - not_null
+
+          - name: source_created_at
+            description: Timestamp when the record was created in the source.
+
+          - name: source_updated_at
+            description: Timestamp when the record was updated in the source.
+
+          - name: payload
+            description: Original source record stored as JSON.
+            data_tests:
+              - not_null
+
+          - name: record_hash
+            description: Hash used to detect source changes.
+            data_tests:
+              - not_null
+
+          - name: batch_id
+            description: Ingestion batch that last processed the record.
+            data_tests:
+              - not_null
+
+          - name: is_active
+            description: Whether the source record is still active.
+            data_tests:
+              - not_null
+
+          - name: first_seen_at
+            description: First time the record was observed.
+            data_tests:
+              - not_null
+
+          - name: last_seen_at
+            description: Most recent time the record was observed.
+            data_tests:
+              - not_null
+
+      - name: users
+        description: >
+          Current-state ecommerce users ingested from the
+          Platzi Fake Store API.
+
+        columns:
+          - name: user_id
+            description: Source user identifier.
+            data_tests:
+              - not_null
+              - unique
+
+          - name: email
+            description: User email address.
+            data_tests:
+              - not_null
+
+          - name: name
+            description: User display name.
+            data_tests:
+              - not_null
+
+          - name: role
+            description: Role supplied by the source system.
+
+          - name: avatar_url
+            description: User avatar URL.
+
+          - name: source_created_at
+            description: Timestamp when the user was created in the source.
+
+          - name: source_updated_at
+            description: Timestamp when the user was updated in the source.
+
+          - name: payload
+            description: Original source record stored as JSON.
+            data_tests:
+              - not_null
+
+          - name: record_hash
+            description: Hash used to detect source changes.
+            data_tests:
+              - not_null
+
+          - name: batch_id
+            description: Ingestion batch that last processed the record.
+            data_tests:
+              - not_null
+
+          - name: is_active
+            description: Whether the source record is still active.
+            data_tests:
+              - not_null
+
+          - name: first_seen_at
+            description: First time the record was observed.
+            data_tests:
+              - not_null
+
+          - name: last_seen_at
+            description: Most recent time the record was observed.
+            data_tests:
+              - not_null
+
+      - name: orders
+        description: Synthetic ecommerce order events.
+
+        columns:
+          - name: order_id
+            description: UUID identifying an order.
+            data_tests:
+              - not_null
+              - unique
+
+          - name: customer_id
+            description: User who placed the order.
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('ecommerce_raw', 'users')
+                    field: user_id
+
+          - name: order_status
+            description: Current status of the order.
+            data_tests:
+              - not_null
+
+          - name: ordered_at
+            description: Time when the order was placed.
+            data_tests:
+              - not_null
+
+          - name: currency
+            description: Currency used by the order.
+            data_tests:
+              - not_null
+
+          - name: payment_method
+            description: Payment method used by the customer.
+            data_tests:
+              - not_null
+
+          - name: shipping_country
+            description: Destination country.
+
+          - name: payload
+            description: Complete generated order represented as JSON.
+            data_tests:
+              - not_null
+
+          - name: batch_id
+            description: Batch that generated the order.
+            data_tests:
+              - not_null
+
+          - name: ingested_at
+            description: Time when the order was inserted into raw.
+            data_tests:
+              - not_null
+
+      - name: order_items
+        description: Line items belonging to synthetic orders.
+
+        columns:
+          - name: order_id
+            description: Order containing the line item.
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('ecommerce_raw', 'orders')
+                    field: order_id
+
+          - name: line_number
+            description: Position of the item within its order.
+            data_tests:
+              - not_null
+
+          - name: product_id
+            description: Product purchased by the customer.
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('ecommerce_raw', 'products')
+                    field: product_id
+
+          - name: quantity
+            description: Number of product units purchased.
+            data_tests:
+              - not_null
+
+          - name: unit_price
+            description: Product price recorded at order time.
+            data_tests:
+              - not_null
+
+          - name: batch_id
+            description: Batch that generated the line item.
+            data_tests:
+              - not_null
+
+          - name: ingested_at
+            description: Time when the line item was inserted into raw.
+            data_tests:
+              - not_null
