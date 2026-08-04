@@ -89,11 +89,13 @@ jobs:
           bash -n sql/init/01_create_roles_and_schemas.sh
           bash -n sql/init/02_create_raw_tables.sh
 
-      - name: Create Airflow CI password file
+      - name: Create writable Airflow CI password file
         run: |
           mkdir -p airflow
           printf '{"%s":"%s"}\n' "$AIRFLOW_ADMIN_USERNAME" "$AIRFLOW_ADMIN_PASSWORD" \
             > airflow/simple_auth_manager_passwords.json
+          sudo chown 50000:0 airflow/simple_auth_manager_passwords.json
+          chmod 664 airflow/simple_auth_manager_passwords.json
 
       - name: Start PostgreSQL
         run: |
