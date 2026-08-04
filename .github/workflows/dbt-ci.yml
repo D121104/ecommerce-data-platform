@@ -38,6 +38,20 @@ jobs:
       BI_DB_USER: bi_reader
       BI_DB_PASSWORD: ci_bi_password
 
+      # Apache Airflow metadata. Sensitive values are repository secrets.
+      AIRFLOW_VERSION: "3.3.0"
+      AIRFLOW_UID: "50000"
+      AIRFLOW_API_PORT: "8080"
+      AIRFLOW_ADMIN_USERNAME: airflow
+      AIRFLOW_ADMIN_PASSWORD: ${{ secrets.CI_AIRFLOW_ADMIN_PASSWORD }}
+      AIRFLOW_METADATA_DB_NAME: airflow_ci
+      AIRFLOW_METADATA_DB_USER: airflow
+      AIRFLOW_METADATA_DB_PASSWORD: ${{ secrets.CI_AIRFLOW_METADATA_DB_PASSWORD }}
+      AIRFLOW_FERNET_KEY: ${{ secrets.CI_AIRFLOW_FERNET_KEY }}
+      AIRFLOW_JWT_SECRET: ${{ secrets.CI_AIRFLOW_JWT_SECRET }}
+      AIRFLOW_ORDERS_PER_RUN: "30"
+      AIRFLOW_ORDER_SEED: "42"
+
       # dbt profile
       DBT_TARGET: dev
       DBT_HOST: 127.0.0.1
@@ -75,8 +89,19 @@ jobs:
           bash -n sql/init/01_create_roles_and_schemas.sh
           bash -n sql/init/02_create_raw_tables.sh
 
+      - name: Create Airflow CI password file
+        run: |
+          mkdir -p airflow
+          printf '{"%s":"%s"}\n' "$AIRFLOW_ADMIN_USERNAME" "$AIRFLOW_ADMIN_PASSWORD" \
+            > airflow/simple_auth_manager_passwords.json
+
       - name: Start PostgreSQL
-        run: docker compose up -d --wait
+        run: |
+          docker compose up -d --wait || {
+            docker compose ps
+            docker compose logs postgres airflow-db airflow-init airflow-api-server
+            exit 1
+          }
 
       - name: Show PostgreSQL status
         run: docker compose ps
@@ -143,7 +168,7 @@ jobs:
 
       - name: Show container logs on failure
         if: failure()
-        run: docker compose logs postgres
+        run: docker compose logs postgres airflow-db airflow-init airflow-api-server
 
       - name: Stop containers
         if: always()
