@@ -156,6 +156,7 @@ models:
                   - paid
                   - shipped
                   - delivered
+                  - cancelled
 
       - name: ordered_at
         data_tests:
