@@ -2,6 +2,7 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
+
 from ecommerce_pipeline.synthetic_orders import (
     ProductSnapshot,
     generate_orders,
