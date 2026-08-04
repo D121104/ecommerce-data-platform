@@ -67,14 +67,10 @@ def main() -> int:
                     found_empty_entity = True
 
                 for issue in result.rejected[:3]:
-                    print(
-                        f"  rejected id={issue.source_record_id}: "
-                        f"{issue.error_message}"
-                    )
+                    print(f"  rejected id={issue.source_record_id}: {issue.error_message}")
 
     except (httpx.HTTPError, ApiClientError) as exc:
         logger.error("API extraction failed: %s", exc)
         return 2
 
     return 1 if found_empty_entity else 0
-

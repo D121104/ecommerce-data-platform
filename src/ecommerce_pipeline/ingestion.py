@@ -65,7 +65,19 @@ def run_ingestion() -> PipelineSummary:
     errors: list[str] = []
 
     try:
-        batch_id = create_pipeline_run(connection)
+        batch_id = create_pipeline_run(
+            connection,
+            pipeline_name="catalog_ingestion",
+            source_name="platzi_fake_store_api",
+            metadata={
+                "entities": [
+                    "categories",
+                    "products",
+                    "users",
+                ],
+                "pipeline_version": "0.1.0",
+            },
+        )
 
         logger.info("Created pipeline batch %s", batch_id)
 

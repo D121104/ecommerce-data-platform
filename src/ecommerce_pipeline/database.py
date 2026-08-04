@@ -68,6 +68,10 @@ def connect_database(
 
 def create_pipeline_run(
     connection: psycopg.Connection[dict[str, Any]],
+    *,
+    pipeline_name: str,
+    source_name: str,
+    metadata: dict[str, Any],
 ) -> UUID:
     with connection.transaction():
         row = connection.execute(
@@ -78,27 +82,13 @@ def create_pipeline_run(
                 status,
                 run_metadata
             )
-            VALUES (
-                %s,
-                %s,
-                'running',
-                %s
-            )
+            VALUES (%s, %s, 'running', %s)
             RETURNING batch_id
             """,
             (
-                "catalog_ingestion",
-                "platzi_fake_store_api",
-                Jsonb(
-                    {
-                        "entities": [
-                            "categories",
-                            "products",
-                            "users",
-                        ],
-                        "pipeline_version": "0.1.0",
-                    }
-                ),
+                pipeline_name,
+                source_name,
+                Jsonb(metadata),
             ),
         ).fetchone()
 

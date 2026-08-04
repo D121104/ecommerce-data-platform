@@ -26,6 +26,7 @@ dev = [
 [project.scripts]
 check-platzi-api = "ecommerce_pipeline.cli:main"
 ingest-platzi = "ecommerce_pipeline.ingest_cli:main"
+generate-orders = "ecommerce_pipeline.generate_orders_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

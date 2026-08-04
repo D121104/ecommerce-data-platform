@@ -120,8 +120,7 @@ class PlatziApiClient:
             offset += len(page)
 
         raise PaginationError(
-            f"Product pagination reached the safety limit of "
-            f"{self.settings.api_max_pages} pages."
+            f"Product pagination reached the safety limit of {self.settings.api_max_pages} pages."
         )
 
     def _request_list(
@@ -158,20 +157,16 @@ class PlatziApiClient:
         try:
             data = response.json()
         except ValueError as exc:
-            raise ApiResponseError(
-                f"Endpoint {endpoint!r} did not return valid JSON."
-            ) from exc
+            raise ApiResponseError(f"Endpoint {endpoint!r} did not return valid JSON.") from exc
 
         if not isinstance(data, list):
             raise ApiResponseError(
-                f"Endpoint {endpoint!r} returned "
-                f"{type(data).__name__}; expected a list."
+                f"Endpoint {endpoint!r} returned {type(data).__name__}; expected a list."
             )
 
         if not all(isinstance(record, dict) for record in data):
             raise ApiResponseError(
-                f"Endpoint {endpoint!r} returned a list "
-                "containing a non-object item."
+                f"Endpoint {endpoint!r} returned a list containing a non-object item."
             )
 
         return data
