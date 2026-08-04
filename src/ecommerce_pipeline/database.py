@@ -72,20 +72,34 @@ def create_pipeline_run(
     pipeline_name: str,
     source_name: str,
     metadata: dict[str, Any],
+    batch_id: UUID | None = None,
 ) -> UUID:
     with connection.transaction():
         row = connection.execute(
             """
             INSERT INTO ops.pipeline_runs (
+                batch_id,
                 pipeline_name,
                 source_name,
                 status,
                 run_metadata
             )
-            VALUES (%s, %s, 'running', %s)
+            VALUES (COALESCE(%s, gen_random_uuid()), %s, %s, 'running', %s)
+            ON CONFLICT (batch_id)
+            DO UPDATE SET
+                status = 'running',
+                started_at = clock_timestamp(),
+                finished_at = NULL,
+                records_extracted = 0,
+                records_inserted = 0,
+                records_updated = 0,
+                records_rejected = 0,
+                error_message = NULL,
+                run_metadata = EXCLUDED.run_metadata
             RETURNING batch_id
             """,
             (
+                batch_id,
                 pipeline_name,
                 source_name,
                 Jsonb(metadata),

@@ -23,6 +23,7 @@ airflow/logs/
 airflow/plugins/__pycache__/
 airflow/airflow.cfg
 airflow/airflow.db
+airflow/simple_auth_manager_passwords.json
 
 # dbt generated files
 dbt/ecommerce_dw/target/

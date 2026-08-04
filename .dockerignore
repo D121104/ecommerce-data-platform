@@ -1,0 +1,11 @@
+.git
+.github
+.venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.ruff_cache
+.env
+airflow/logs
+dbt/ecommerce_dw/logs
+dbt/ecommerce_dw/target

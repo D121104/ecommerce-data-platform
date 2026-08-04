@@ -42,7 +42,9 @@ class PipelineSummary:
     error_message: str | None
 
 
-def run_ingestion() -> PipelineSummary:
+def run_ingestion(
+    batch_id: UUID | None = None,
+) -> PipelineSummary:
     api_settings = get_settings()
     database_settings = DatabaseSettings()
 
@@ -53,7 +55,7 @@ def run_ingestion() -> PipelineSummary:
     )
 
     connection = connect_database(database_settings)
-    batch_id: UUID | None = None
+    pipeline_batch_id = batch_id
 
     extracted = 0
     inserted = 0
@@ -65,7 +67,7 @@ def run_ingestion() -> PipelineSummary:
     errors: list[str] = []
 
     try:
-        batch_id = create_pipeline_run(
+        pipeline_batch_id = create_pipeline_run(
             connection,
             pipeline_name="catalog_ingestion",
             source_name="platzi_fake_store_api",
@@ -77,9 +79,10 @@ def run_ingestion() -> PipelineSummary:
                 ],
                 "pipeline_version": "0.1.0",
             },
+            batch_id=pipeline_batch_id,
         )
 
-        logger.info("Created pipeline batch %s", batch_id)
+        logger.info("Using pipeline batch %s", pipeline_batch_id)
 
         with PlatziApiClient(api_settings) as api_client:
             for entity in entities:
@@ -100,7 +103,7 @@ def run_ingestion() -> PipelineSummary:
                     load_stats = load_entity(
                         connection,
                         entity=entity,
-                        batch_id=batch_id,
+                        batch_id=pipeline_batch_id,
                         result=validation_result,
                     )
 
@@ -160,7 +163,7 @@ def run_ingestion() -> PipelineSummary:
 
         finish_pipeline_run(
             connection,
-            batch_id=batch_id,
+            batch_id=pipeline_batch_id,
             status=status,
             records_extracted=extracted,
             records_inserted=inserted,
@@ -175,7 +178,7 @@ def run_ingestion() -> PipelineSummary:
         )
 
         return PipelineSummary(
-            batch_id=batch_id,
+            batch_id=pipeline_batch_id,
             status=status,
             records_extracted=extracted,
             records_inserted=inserted,
@@ -185,11 +188,11 @@ def run_ingestion() -> PipelineSummary:
         )
 
     except Exception as exc:
-        if batch_id is not None:
+        if pipeline_batch_id is not None:
             try:
                 finish_pipeline_run(
                     connection,
-                    batch_id=batch_id,
+                    batch_id=pipeline_batch_id,
                     status="failed",
                     records_extracted=extracted,
                     records_inserted=inserted,
@@ -204,7 +207,7 @@ def run_ingestion() -> PipelineSummary:
             except Exception:
                 logger.exception(
                     "Could not mark batch %s as failed.",
-                    batch_id,
+                    pipeline_batch_id,
                 )
 
         raise
