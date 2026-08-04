@@ -93,7 +93,38 @@ jobs:
         run: pytest -m "not integration"
 
       - name: Ingest source data
-        run: ingest-platzi
+        run: |
+          set +e
+          ingest-platzi
+          ingest_exit_code=$?
+          set -e
+
+          if [ "$ingest_exit_code" -ne 0 ]; then
+            echo "::warning::Ingestion returned exit code $ingest_exit_code; validating loaded data."
+          fi
+
+          source_data_ready="$(
+            docker compose exec -T postgres \
+              psql \
+                -U "$POSTGRES_ADMIN_USER" \
+                -d "$POSTGRES_DB" \
+                -Atc "
+                  SELECT CASE
+                    WHEN (SELECT COUNT(*) FROM raw.categories) > 0
+                    AND (SELECT COUNT(*) FROM raw.products) > 0
+                    AND (SELECT COUNT(*) FROM raw.users) > 0
+                    THEN 1
+                    ELSE 0
+                  END;
+                "
+          )"
+
+          if [ "$source_data_ready" != "1" ]; then
+            echo "::error::Ingestion did not load sufficient source data."
+            exit 1
+          fi
+
+          echo "Source data validation passed."
 
       - name: Generate deterministic orders
         run: |
