@@ -31,6 +31,9 @@ REVOKE CONNECT ON DATABASE :"db_name" FROM PUBLIC;
 GRANT CONNECT ON DATABASE :"db_name"
   TO :"ingestion_user", :"dbt_user", :"bi_user";
 
+GRANT CREATE ON DATABASE :"db_name"
+  TO :"dbt_user";
+
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 
 CREATE SCHEMA raw

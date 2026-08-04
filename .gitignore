@@ -28,6 +28,7 @@ airflow/airflow.db
 dbt/ecommerce_dw/target/
 dbt/ecommerce_dw/logs/
 dbt/ecommerce_dw/dbt_packages/
+dbt/ecommerce_dw/.user.yml
 
 # Local data
 data/
