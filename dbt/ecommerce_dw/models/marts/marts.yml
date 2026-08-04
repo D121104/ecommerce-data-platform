@@ -1,0 +1,131 @@
+version: 2
+
+models:
+  - name: mart_daily_sales
+    description: |
+      {{ doc('warehouse_overview') }}
+
+      Grain: one row per ordered_date and currency_code.
+
+    columns:
+      - name: ordered_date
+        data_tests:
+          - not_null
+
+      - name: currency_code
+        data_tests:
+          - not_null
+
+      - name: order_count
+        data_tests:
+          - not_null
+
+      - name: order_line_count
+        data_tests:
+          - not_null
+
+      - name: total_quantity
+        data_tests:
+          - not_null
+
+      - name: gross_order_amount
+        data_tests:
+          - not_null
+
+      - name: delivered_order_amount
+        data_tests:
+          - not_null
+
+
+  - name: mart_customer_sales
+    description: >
+      Customer sales summary.
+      Grain: one row per customer_key and currency_code.
+
+    columns:
+      - name: customer_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key
+
+      - name: customer_id
+        data_tests:
+          - not_null
+
+      - name: currency_code
+        data_tests:
+          - not_null
+
+      - name: first_ordered_at
+        data_tests:
+          - not_null
+
+      - name: last_ordered_at
+        data_tests:
+          - not_null
+
+      - name: order_count
+        data_tests:
+          - not_null
+
+      - name: total_quantity
+        data_tests:
+          - not_null
+
+      - name: gross_order_amount
+        data_tests:
+          - not_null
+
+      - name: delivered_order_amount
+        data_tests:
+          - not_null
+
+
+  - name: mart_product_sales
+    description: >
+      Product sales summary.
+      Grain: one row per product_key and currency_code.
+
+    columns:
+      - name: product_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_key
+
+      - name: product_id
+        data_tests:
+          - not_null
+
+      - name: currency_code
+        data_tests:
+          - not_null
+
+      - name: first_ordered_at
+        data_tests:
+          - not_null
+
+      - name: last_ordered_at
+        data_tests:
+          - not_null
+
+      - name: order_count
+        data_tests:
+          - not_null
+
+      - name: units_sold
+        data_tests:
+          - not_null
+
+      - name: gross_sales_amount
+        data_tests:
+          - not_null
+
+      - name: delivered_sales_amount
+        data_tests:
+          - not_null

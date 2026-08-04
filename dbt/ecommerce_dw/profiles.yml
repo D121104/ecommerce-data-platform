@@ -1,14 +1,39 @@
 ecommerce_dw:
-  target: dev
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
 
   outputs:
     dev:
       type: postgres
-      host: "127.0.0.1"
-      port: "{{ env_var('POSTGRES_PORT', '5433') | int }}"
-      user: "{{ env_var('DBT_DB_USER') }}"
-      password: "{{ env_var('DBT_DB_PASSWORD') }}"
-      dbname: "{{ env_var('POSTGRES_DB') }}"
-      schema: staging
+      host: "{{ env_var('DBT_HOST', 'localhost') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | as_number }}"
+      user: "{{ env_var('DBT_USER', 'postgres') }}"
+      password: "{{ env_var('DBT_PASSWORD') }}"
+      dbname: "{{ env_var('DBT_DBNAME', 'ecommerce') }}"
+      schema: "{{ env_var('DBT_SCHEMA', 'dbt_dev') }}"
       threads: 4
       connect_timeout: 10
+      sslmode: "{{ env_var('DBT_SSLMODE', 'prefer') }}"
+
+    ci:
+      type: postgres
+      host: "{{ env_var('DBT_HOST') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | as_number }}"
+      user: "{{ env_var('DBT_USER') }}"
+      password: "{{ env_var('DBT_PASSWORD') }}"
+      dbname: "{{ env_var('DBT_DBNAME') }}"
+      schema: "{{ env_var('DBT_SCHEMA', 'dbt_ci') }}"
+      threads: 4
+      connect_timeout: 10
+      sslmode: "{{ env_var('DBT_SSLMODE', 'require') }}"
+
+    prod:
+      type: postgres
+      host: "{{ env_var('DBT_HOST') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | as_number }}"
+      user: "{{ env_var('DBT_USER') }}"
+      password: "{{ env_var('DBT_PASSWORD') }}"
+      dbname: "{{ env_var('DBT_DBNAME') }}"
+      schema: "{{ env_var('DBT_SCHEMA', 'analytics') }}"
+      threads: 8
+      connect_timeout: 10
+      sslmode: "{{ env_var('DBT_SSLMODE', 'require') }}"

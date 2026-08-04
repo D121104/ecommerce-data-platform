@@ -1,0 +1,20 @@
+version: 2
+
+exposures:
+  - name: ecommerce_sales_reporting
+    label: Ecommerce Sales Reporting
+    type: dashboard
+    maturity: medium
+
+    description: >
+      Sales reporting layer for daily revenue, customer performance,
+      and product performance analysis.
+
+    depends_on:
+      - ref('mart_daily_sales')
+      - ref('mart_customer_sales')
+      - ref('mart_product_sales')
+
+    owner:
+      name: Data Engineering Team
+      email: ducduydao12112004@gmail.com
