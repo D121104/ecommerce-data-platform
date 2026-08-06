@@ -462,7 +462,7 @@ make db-up
 
 ## CV và portfolio
 
-Nội dung đã chuẩn bị sẵn trong [`docs/cv-portfolio.md`](docs/cv-portfolio.md). Vai trò cá nhân được mô tả theo deliverable có thể kiểm chứng: ingestion, raw/ops contract, dbt warehouse/marts, Airflow orchestration/monitoring, least privilege, Metabase specification và CI.
+Nội dung đã chuẩn bị sẵn trong [`docs/portfolio-case-study.md`](docs/portfolio-case-study.md). Vai trò cá nhân được mô tả theo deliverable có thể kiểm chứng: ingestion, raw/ops contract, dbt warehouse/marts, Airflow orchestration/monitoring, least privilege, Metabase specification và CI.
 
 Evidence captures đã được kiểm tra và làm sạch thông tin nhạy cảm:
 
