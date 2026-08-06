@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
 import re
@@ -107,10 +108,17 @@ def _update_orchestration_run(
     run_id: str,
     status: str,
     error_message: str | None = None,
+    allow_missing: bool = False,
 ) -> None:
     """Cập nhật trạng thái cuối của toàn bộ DAG."""
 
     batch_id = _orchestration_batch_id(run_id)
+    final_metadata = json.dumps(
+        {
+            "airflow_finalized": True,
+            "airflow_run_id": run_id,
+        }
+    )
 
     with _db_connection() as connection:
         with connection.cursor() as cursor:
@@ -129,9 +137,76 @@ def _update_orchestration_run(
                 (
                     status,
                     error_message,
-                    '{"airflow_finalized": true}',
+                    final_metadata,
                     batch_id,
                 ),
+            )
+
+            updated_rows = cursor.rowcount
+
+            LOGGER.info(
+                "Finalized orchestration audit: run_id=%s "
+                "batch_id=%s status=%s updated_rows=%s",
+                run_id,
+                batch_id,
+                status,
+                updated_rows,
+            )
+
+            if updated_rows == 1:
+                return
+
+            if not allow_missing:
+                raise RuntimeError(
+                    "No orchestration audit row exists for "
+                    f"run_id={run_id}, batch_id={batch_id}"
+                )
+
+            cursor.execute(
+                """
+                INSERT INTO ops.pipeline_runs (
+                    batch_id,
+                    pipeline_name,
+                    source_name,
+                    status,
+                    finished_at,
+                    error_message,
+                    run_metadata
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    clock_timestamp(),
+                    %s,
+                    %s::jsonb
+                )
+                ON CONFLICT (batch_id)
+                DO UPDATE SET
+                    status = EXCLUDED.status,
+                    finished_at = EXCLUDED.finished_at,
+                    error_message = EXCLUDED.error_message,
+                    run_metadata =
+                        ops.pipeline_runs.run_metadata
+                        || EXCLUDED.run_metadata
+                """,
+                (
+                    batch_id,
+                    DAG_ID,
+                    "airflow",
+                    status,
+                    error_message,
+                    final_metadata,
+                ),
+            )
+
+            LOGGER.warning(
+                "Created fallback orchestration audit row: "
+                "run_id=%s batch_id=%s status=%s",
+                run_id,
+                batch_id,
+                status,
             )
 
 
@@ -157,6 +232,7 @@ def _mark_dag_failed(context: dict[str, Any]) -> None:
                 exception
                 or "One or more Airflow tasks failed"
             )[:4000],
+            allow_missing=True,
         )
     except Exception:
         LOGGER.exception(
@@ -223,20 +299,42 @@ with DAG(
                         status = 'running',
                         started_at = clock_timestamp(),
                         finished_at = NULL,
+                        records_extracted = 0,
+                        records_inserted = 0,
+                        records_updated = 0,
+                        records_rejected = 0,
                         error_message = NULL,
                         run_metadata = EXCLUDED.run_metadata
+                    RETURNING batch_id
                     """,
                     (
                         batch_id,
                         DAG_ID,
                         "airflow",
-                        (
-                            '{"orchestrator": '
-                            '"apache_airflow", '
-                            '"timezone": "UTC"}'
+                        json.dumps(
+                            {
+                                "orchestrator": "apache_airflow",
+                                "timezone": "UTC",
+                                "airflow_run_id": run_id,
+                            }
                         ),
                     ),
                 )
+
+                result = cursor.fetchone()
+
+        if result is None or result[0] != batch_id:
+            raise RuntimeError(
+                "Database did not return the expected orchestration "
+                f"batch_id for run_id={run_id}"
+            )
+
+        LOGGER.info(
+            "Created or resumed orchestration audit: run_id=%s "
+            "batch_id=%s",
+            run_id,
+            batch_id,
+        )
 
         return str(batch_id)
 
@@ -404,12 +502,29 @@ with DAG(
         """Sinh orders cho business date của DAG run."""
 
         context = get_current_context()
-
-        business_date = (
-            context["data_interval_start"]
-            .date()
-            .isoformat()
+        run_id = context.get("run_id", "<unknown>")
+        run_start = (
+            context.get("data_interval_start")
+            or context.get("logical_date")
         )
+
+        if run_start is None:
+            run_start = pendulum.now("UTC")
+            LOGGER.warning(
+                "Run %s has no data interval or logical date; "
+                "using current UTC time %s for business date",
+                run_id,
+                run_start,
+            )
+        else:
+            LOGGER.info(
+                "Using Airflow run timestamp %s for run %s "
+                "to derive business date",
+                run_start,
+                run_id,
+            )
+
+        business_date = run_start.date().isoformat()
 
         order_count = os.getenv(
             "AIRFLOW_ORDERS_PER_RUN",
