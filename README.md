@@ -294,7 +294,7 @@ Metabase dashboard metadata được lưu trong application database volume, kh�
 
 - dashboard specification, source schema, metric definition và query quan trọng được lưu trong [`dashboards/executive-overview.md`](dashboards/executive-overview.md);
 - credentials/data source không được lưu trong Git;
-- ảnh evidence public-safe nằm trong [`docs/assets/`](docs/assets/README.md);
+- ảnh evidence public-safe nằm trong [`docs/assets/`](docs/assets/);
 - khi chia sẻ portfolio, chụp lại UI sau khi cấu hình data source local và che URL/token nếu có.
 
 Card Top Customers dùng aggregate rõ ràng theo `customer_id` + `customer_name`, filter `USD`, sort tổng doanh thu giảm dần và limit 10. Việc thêm `customer_label` tránh gộp nhầm các user có cùng display name.
@@ -464,11 +464,11 @@ make db-up
 
 Nội dung đã chuẩn bị sẵn trong [`docs/cv-portfolio.md`](docs/cv-portfolio.md). Vai trò cá nhân được mô tả theo deliverable có thể kiểm chứng: ingestion, raw/ops contract, dbt warehouse/marts, Airflow orchestration/monitoring, least privilege, Metabase specification và CI.
 
-Generated reference evidence cards (không phải screenshot UI và không chứa credential):
+Evidence captures đã được kiểm tra và làm sạch thông tin nhạy cảm:
 
-- [`airflow-dag-success.svg`](docs/assets/airflow-dag-success.svg)
-- [`dbt-build-success.svg`](docs/assets/dbt-build-success.svg)
-- [`metabase-executive-overview.svg`](docs/assets/metabase-executive-overview.svg)
+- [`airflow-dag-success.png`](docs/assets/airflow-dag-success.png) — Airflow DAG run thành công với các task pipeline ở trạng thái Success.
+- [`dbt-build-success.png`](docs/assets/dbt-build-success.png) — dbt build target `prod` với các test pass và không có error.
+- [`metabase-executive-overview.pdf`](docs/assets/metabase-executive-overview.pdf) — Executive Overview dashboard export với các chỉ số tổng hợp.
 
 ## License / portfolio note
 
