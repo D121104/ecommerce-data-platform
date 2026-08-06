@@ -1,10 +1,12 @@
-# Báo cáo tiến độ hiện tại — E-commerce Data Platform
+# Báo cáo tiến độ hiện tại — Historical Snapshot
 
-**Ngày đánh giá:** 28/07/2026  
-**Căn cứ đánh giá:** đối chiếu hiện trạng repository với [kế hoạch dự án](ke-hoach-ecommerce-data-platform.md).  
-**Phạm vi đánh giá:** mã nguồn, cấu hình, Docker Compose, SQL khởi tạo và kiểm thử hiện có trong repository. Không có bằng chứng về một lần chạy end-to-end thành công tại thời điểm lập báo cáo.
+> **Historical document — 28/07/2026.** Tài liệu này ghi lại một lần đánh giá repository ở giai đoạn đầu và không đại diện cho trạng thái runtime hiện tại. Hãy dùng [current architecture](current-architecture.md), [data model](data-model.md), [operations runbook](operations-runbook.md) và [`README.md`](../README.md) làm nguồn chính.
 
-## 1. Tóm tắt điều hành
+**Ngày đánh giá:** 28/07/2026
+**Căn cứ đánh giá:** đối chiếu hiện trạng repository với [kế hoạch dự án](ke-hoach-ecommerce-data-platform.md) tại thời điểm đó.
+**Phạm vi đánh giá:** mã nguồn, cấu hình, Docker Compose, SQL khởi tạo và kiểm thử có trong repository ở thời điểm lập báo cáo.
+
+## 1. Tóm tắt điều hành tại thời điểm lập báo cáo
 
 Dự án đang ở giai đoạn **hoàn thiện nền tảng ban đầu và triển khai một phần ingestion từ Platzi API**. Repository đã có cấu trúc khởi tạo, container PostgreSQL, phân quyền/schema, các bảng `raw`/`ops`, API client có pagination cho products, retry HTTP, Pydantic validation và một số unit test.
 

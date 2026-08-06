@@ -1,4 +1,6 @@
-# Kế hoạch toàn diện: E-commerce Data Platform
+# Kế hoạch toàn diện: E-commerce Data Platform — Design History
+
+> **Design history / target architecture.** Tài liệu này giữ lại các quyết định và mục tiêu ban đầu của project. Nó không phải runbook vận hành và một số tên model/trạng thái có thể khác hiện trạng. Để xem hệ thống đang chạy, dùng [current architecture](current-architecture.md), [data model](data-model.md), [operations runbook](operations-runbook.md) và [`README.md`](../README.md).
 
 ## 1. Mục tiêu dự án
 
@@ -17,7 +19,7 @@ Tên phù hợp để đưa vào CV:
 
 > **E-commerce API-to-Warehouse Data Platform**
 
-## 2. Phạm vi dự án
+## 2. Phạm vi dự án ban đầu
 
 ### Chức năng bắt buộc — MVP
 

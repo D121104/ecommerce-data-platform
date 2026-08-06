@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Metabase executive overview reference evidence</title>
+  <desc id="desc">Sanitized static reference dashboard with aggregate synthetic ecommerce metrics.</desc>
+  <defs>
+    <linearGradient id="header" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#064e3b"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .font { font-family: Inter, Segoe UI, Arial, sans-serif; }
+      .small { font-size: 17px; }
+      .body { font-size: 22px; }
+      .title { font-size: 34px; font-weight: 700; }
+      .kpi { font-size: 32px; font-weight: 700; }
+      .label { font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+    </style>
+  </defs>
+  <rect width="1200" height="700" fill="#f1f5f9"/>
+  <rect x="36" y="32" width="1128" height="636" rx="20" fill="#ffffff" filter="url(#shadow)"/>
+  <rect x="36" y="32" width="1128" height="128" rx="20" fill="url(#header)"/>
+  <rect x="36" y="120" width="1128" height="40" fill="url(#header)"/>
+  <text x="78" y="84" class="font title" fill="#ffffff">Executive Overview</text>
+  <text x="78" y="122" class="font body" fill="#ccfbf1">E-commerce sales · currency: USD</text>
+  <rect x="934" y="68" width="170" height="44" rx="22" fill="#d1fae5"/>
+  <text x="1019" y="97" class="font body" text-anchor="middle" fill="#065f46">BI READER</text>
+
+  <g class="font">
+    <rect x="78" y="198" width="320" height="116" rx="14" fill="#ecfdf5"/>
+    <text x="104" y="232" class="label" fill="#047857">GROSS REVENUE</text>
+    <text x="104" y="281" class="kpi" fill="#064e3b">$180,024.00</text>
+    <text x="104" y="303" class="small" fill="#64748b">validated reference run</text>
+
+    <rect x="430" y="198" width="320" height="116" rx="14" fill="#eff6ff"/>
+    <text x="456" y="232" class="label" fill="#1d4ed8">ORDERS</text>
+    <text x="456" y="281" class="kpi" fill="#1e3a8a">90</text>
+    <text x="456" y="303" class="small" fill="#64748b">warehouse.fct_orders</text>
+
+    <rect x="782" y="198" width="320" height="116" rx="14" fill="#fff7ed"/>
+    <text x="808" y="232" class="label" fill="#c2410c">ORDER LINES</text>
+    <text x="808" y="281" class="kpi" fill="#7c2d12">312</text>
+    <text x="808" y="303" class="small" fill="#64748b">warehouse.fct_order_items</text>
+
+    <rect x="78" y="348" width="650" height="250" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="104" y="384" class="body" font-weight="700" fill="#0f172a">Top Customers</text>
+    <text x="104" y="412" class="small" fill="#64748b">Aggregate by customer ID · sort descending · limit 10</text>
+    <line x1="104" y1="438" x2="700" y2="438" stroke="#e2e8f0" stroke-width="2"/>
+    <g class="body">
+      <text x="104" y="474" fill="#0f172a">Admin (#3)</text><text x="650" y="474" text-anchor="end" fill="#0f766e">$34,757.00</text>
+      <text x="104" y="508" fill="#0f172a">Milano (#54)</text><text x="650" y="508" text-anchor="end" fill="#0f766e">$21,777.00</text>
+      <text x="104" y="542" fill="#0f172a">Daniel (#17)</text><text x="650" y="542" text-anchor="end" fill="#0f766e">$20,803.00</text>
+      <text x="104" y="576" fill="#64748b">... 7 more ranked customers</text>
+    </g>
+
+    <rect x="760" y="348" width="342" height="250" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="786" y="384" class="body" font-weight="700" fill="#0f172a">Daily Sales</text>
+    <text x="786" y="412" class="small" fill="#64748b">marts.mart_daily_sales</text>
+    <line x1="786" y1="550" x2="1074" y2="550" stroke="#94a3b8" stroke-width="2"/>
+    <line x1="786" y1="438" x2="786" y2="550" stroke="#94a3b8" stroke-width="2"/>
+    <polyline points="800,520 850,500 900,510 950,468 1000,478 1055,445" fill="none" stroke="#0f766e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="800" cy="520" r="6" fill="#0f766e"/><circle cx="850" cy="500" r="6" fill="#0f766e"/><circle cx="900" cy="510" r="6" fill="#0f766e"/><circle cx="950" cy="468" r="6" fill="#0f766e"/><circle cx="1000" cy="478" r="6" fill="#0f766e"/><circle cx="1055" cy="445" r="6" fill="#0f766e"/>
+  </g>
+  <text x="78" y="640" class="font small" fill="#64748b">Generated reference evidence · sanitized · not a Metabase UI export</text>
+</svg>

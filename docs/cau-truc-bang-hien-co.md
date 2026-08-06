@@ -1,8 +1,10 @@
-# Cấu trúc các bảng PostgreSQL hiện có
+# Cấu trúc raw/ops PostgreSQL — Schema Reference
 
-**Nguồn trích xuất:** [`sql/init/02_create_raw_tables.sh`](../sql/init/02_create_raw_tables.sh)  
-**Phạm vi:** cấu trúc được khai báo trong SQL khởi tạo hiện tại, gồm 7 bảng thuộc schema `ops` và `raw`.  
-**Lưu ý:** đây là tài liệu từ mã SQL; chưa xác minh trực tiếp từ một PostgreSQL instance đang chạy.
+> Tài liệu này tập trung vào raw/ops tables được khai báo trong SQL init. Nó không phải catalog đầy đủ của dbt staging, warehouse, marts hoặc Metabase. Xem [data model](data-model.md) cho contract end-to-end và [current architecture](current-architecture.md) cho lineage/runtime.
+
+**Nguồn trích xuất:** [`sql/init/02_create_raw_tables.sh`](../sql/init/02_create_raw_tables.sh)
+**Phạm vi:** 7 bảng thuộc schema `ops` và `raw`, cùng các constraint/index liên quan.
+**Cách xác minh:** đối chiếu trực tiếp với SQL init; instance runtime có thể thay đổi theo volume/migration hiện có.
 
 ## 1. Tổng quan
 

@@ -25,6 +25,17 @@ airflow/airflow.cfg
 airflow/airflow.db
 airflow/simple_auth_manager_passwords.json
 
+# Local backups, temporary scripts, exports and generated evidence.
+# Keep curated portfolio assets under docs/assets/ tracked.
+docker-compose.backup.yml
+tmp/
+*.bak
+*.backup
+*.dump
+*.sql.bak
+metabase_exports/
+screenshots/
+
 # dbt generated files
 dbt/ecommerce_dw/target/
 dbt/ecommerce_dw/logs/
